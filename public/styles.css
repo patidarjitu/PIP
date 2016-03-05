@@ -236,3 +236,7 @@ z-index: 998;
 .min-height{
     min-height: inherit;
 }
+
+.progress-min-width{
+    min-width: 100%;
+}

@@ -1,6 +1,7 @@
 var express = require('express');
 var passport = require('passport');
 var Post = require('../models/posts');
+var Users = require('../models/users');
 var router = express.Router();
 
 
@@ -9,6 +10,18 @@ router.get('/allposts',function(req,res){
        if(err){
            console.log(err);
        }
+       res.send(docs);
+   });
+});
+
+router.get('/getpost',function(req,res){
+   Post.findOne({_id:req.query.id}).
+   populate('user').
+   exec(function(err,docs){
+       if(err){
+           console.log(err);
+       }
+           console.log(docs);
        res.send(docs);
    });
 });

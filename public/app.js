@@ -119,6 +119,7 @@ app.controller('register',['$scope','$location','AuthService',function($scope, $
 
     
 app.controller('home',['$scope','$http','AuthService','$rootScope','$location',function($scope, $http,AuthService,$rootScope,$location) {
+    $scope.progressbar=true;
      console.log(AuthService.getUserStatus());
         console.log(AuthService.getUserDetails());
     $scope.user=AuthService.getUserDetails()||{};
@@ -137,9 +138,11 @@ app.controller('home',['$scope','$http','AuthService','$rootScope','$location',f
     $http.get('/api/allposts')
     .success(function(data) {
         $scope.homeposts = data;
+        $scope.progressbar=false;
         console.log(data);
     })
     .error(function(data) {
+        $scope.progressbar=false;
         console.log('Error: ' + data);
     });
     
@@ -241,5 +244,15 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
     .error(function(err){
        console.log('Error: ' + data);
     })
+    
+    $scope.activity=[{
+        title:'prithvi',
+        content:'eretregtght'
+    },
+    {
+        title:'prithvi',
+        content:'eretregtght'
+    }
+    ];
     
 }]);
