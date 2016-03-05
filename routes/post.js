@@ -15,11 +15,19 @@ router.get('/allposts',function(req,res){
 
 
 router.get('/near',function(req,res){
-   Post.find({
-       location: {
-        $near: req.query.coords,
-        $maxDistance: req.query.distance||50
-    }},function(err,docs){
+   Post.find({ location :
+                         { $near :
+                           { $geometry :
+                              { type : "Point" ,
+                                coordinates : [req.query.lon,req.query.lat] } ,
+                             $maxDistance : req.query.distance
+                      } } }
+    //                   {
+    //    location: {
+    //     $near: req.query.coords,
+    //     $maxDistance: req.query.distance||50
+    // }}
+    ,function(err,docs){
        if(err){
            console.log(err);
        }

@@ -153,7 +153,8 @@ app.controller('home',['$scope','$http','AuthService','$rootScope','$location',f
     
     $scope.near=function(){
         $http.get('api/near',{params:{
-            coords:$scope.coords,
+            lon:$scope.coords[0],
+            lat:$scope.coords[1],
             distance:$scope.distance||20
         }})
         .success(function(data) { 
