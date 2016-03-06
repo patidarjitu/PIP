@@ -134,18 +134,20 @@ app.controller('home',['$scope','$http','AuthService','$rootScope','$location',f
     }
     $scope.user.points=$scope.user.points||0;
     
-    
-    $http.get('/api/allposts')
-    .success(function(data) {
-        $scope.homeposts = data;
-        $scope.progressbar=false;
-        console.log(data);
-    })
-    .error(function(data) {
-        $scope.progressbar=false;
-        console.log('Error: ' + data);
-    });
-    
+    $scope.homeposts=[];
+    $scope.allposts=function(){
+        $http.get('/api/allposts')
+        .success(function(data) {
+            $scope.homeposts = data;
+            $scope.progressbar=false;
+            console.log(data);
+        })
+        .error(function(data) {
+            $scope.progressbar=false;
+            console.log('Error: ' + data);
+        });
+    };
+    $scope.allposts();
     navigator.geolocation.getCurrentPosition(pos1);
         $scope.coords=[];
             function pos1(po){
@@ -155,19 +157,24 @@ app.controller('home',['$scope','$http','AuthService','$rootScope','$location',f
             }
     
     $scope.near=function(){
-        $http.get('api/near',{params:{
-            lon:$scope.coords[0],
-            lat:$scope.coords[1],
-            distance:$scope.distance||20
-        }})
-        .success(function(data) { 
-        $scope.homeposts = data;
-        console.log(data);
-    })
-    .error(function(data) {
-        console.log('Error: ' + data);
-    });
-        
+        if($scope.distance==0){
+        $scope.allposts();
+        }else{
+            $scope.progressbar=true;
+            $http.get('api/near',{params:{
+                lon:$scope.coords[0],
+                lat:$scope.coords[1],
+                distance:$scope.distance||20
+            }})
+            .success(function(data) { 
+            $scope.homeposts = data;
+            $scope.progressbar=false;
+            console.log(data);
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        });
+    }
     };        
     
     $scope.logout = function () {
@@ -238,13 +245,23 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
     // $scope.Post={};
     $scope.id=$routeParams.id;
     $scope.GetPost=function(){
+        $scope.progressbar=true;
         $http.get('api/getpost',{params:{id:$scope.id}})
         .success(function(data){
-            console.log(data);
+            $scope.progressbar=false;
             $scope.PostDetail=data;
-        })
+            console.log(data);
+            $http.get('api/getcomments',{params:{id:$scope.PostDetail.comment}})
+            .success(function(data){
+                console.log(data);
+                $scope.Comments=data[0];
+            }).
+            error(function(err){
+            console.log('Error: ' + err);
+            });
+             })
         .error(function(err){
-        console.log('Error: ' + data);
+        console.log('Error: ' + err);
         });
     };
     $scope.GetPost();
@@ -261,7 +278,7 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
     });
     
     $scope.PostComment=function(){
-        $http.post('/api/comment', {params:{com:$scope.Comment,id:$scope.PostDetail.comment}})
+        $http.post('/api/comment', {params:{com:$scope.Comment,id:$scope.Comments._id}})
             .success(function(data) {
                  $location.path('/');  
             })

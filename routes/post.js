@@ -17,6 +17,21 @@ router.get('/allposts',function(req,res){
 
 router.get('/getpost',function(req,res){
    Post.findOne({_id:req.query.id}).
+   populate('comments.user').
+   exec(function(err,docs){
+       if(err){
+           console.log(err);
+       }
+           console.log(docs);
+       res.send(docs);
+   });
+});
+
+
+router.get('/getcomments',function(req,res){
+    console.log(req.query.id);
+
+   Comment.find({_id:req.query.id}).
    populate('user').
    exec(function(err,docs){
        if(err){
@@ -79,11 +94,9 @@ router.post('/comment',function(req,res){
    console.log(req.body.params.id);
    var comment=new Comment();
   
-
-    
    Comment.find({_id:req.body.params.id}, function(err, post) {
-       var p={comment:req.body.params.com,user:req.user._id};
-       console.log(post);
+       var p={comment:req.body.params.com,user:req.user._id,username:req.user.username};
+       console.log(p);
         post[0].comments.push(p);
       if (err) return res.send(err);
       
