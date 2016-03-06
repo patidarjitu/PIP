@@ -243,7 +243,18 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
     })
     .error(function(err){
        console.log('Error: ' + data);
-    })
+    });
+    var dialog = document.querySelector('dialog');
+    var showModalButton = document.querySelector('.show-modal');
+    if (! dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
+    }
+    showModalButton.addEventListener('click', function() {
+      dialog.showModal();
+    });
+    dialog.querySelector('.close').addEventListener('click', function() {
+      dialog.close();
+    });
     
     $scope.activity=[{
         title:'prithvi',

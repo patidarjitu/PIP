@@ -1,5 +1,5 @@
 <div class="mdl-grid">
-<ul class="media-list jumbotron">
+<ul class="media-list">
 <li class="media">
 <div class="media-left image-padding">
       <a href="#">
@@ -8,27 +8,41 @@
     </div>
 	<div class="media-body">
 <div class="demo-card-wide mdl-card mdl-cell mdl-cell--12-col mdl-shadow--3dp">
-				 <div class="mdl-card__title">
-				   <h2>{{PostDetail.title}}</h2>
+				 <div class="mdl-card__title card-title-height">
+				   <h4>{{PostDetail.title}}</h4>
 				   
 				 </div>
-                 <div class="mdl-card__supporting-text">
+                 <div class="mdl-card__supporting-text card-body-height">
                  {{PostDetail.description}}
                  </div>
+                 <div class="mdl-card__actions mdl-card--border">
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent show-modal">Comment</button>
+            </div>
+            <dialog class=" mdl-dialog dialog-width">
+                <div class="mdl-dialog__content">
+                 <div class="mdl-textfield mdl-js-textfield mdl-cell--12-col mdl-cell--4-col-tablet">
+                    <textarea class="mdl-textfield__input" type="text" rows= "5" id="Comment" ng-model="Comment"></textarea>
+                    <label class="mdl-textfield__label" for="Comment">Comment</label>
+                </div>
+                </div>
+                <div class="mdl-dialog__actions ">
+                <button type="button" class="mdl-button">Submit</button>
+                <button type="button" class="mdl-button close">Close</button>
+                </div>
+            </dialog>
 
-					<h4>Comments</h4>
           <div ng-repeat="item in activity">
 		  <div class="media">
         <a class="media-left image-padding" href="#">
           <img class="media-object" width="50px" height="50px" src="images/user.jpg" alt="Generic placeholder image">
         </a>
 			<div class="media-body">
-			  <div class="demo-card-wide mdl-card mdl-cell mdl-cell--12-col mdl-shadow--3dp" >
-				  <div class="mdl-card__title">
+			  <div class="demo-card-wide mdl-card mdl-cell mdl-cell--12-col mdl-shadow--3dp card-height" >
+				  <div class="mdl-card__title  card-title-height">
 				   <h4>{{item.title}}</h4>
 				   
 				 </div>
-                 <div class="mdl-card__supporting-text">
+                 <div class="mdl-card__supporting-text card-body-height">
                  {{item.content}}
                  </div>
 				</div>
@@ -43,3 +57,4 @@
 </li>
 </ul>
 </div>
+

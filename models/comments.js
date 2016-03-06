@@ -1,13 +1,16 @@
-// var mongoose=require('mongoose');
-// var user=require('./users');
-// 
-// module.exports=new mongoose.Schema({
-//     comments:[
-//         {
-//             user:'',
-//             commentdescription:{
-//                 type:String
-//             }
-//         }
-//     ]
-// });
+var mongoose=require('mongoose');
+
+var CommentSchema=mongoose.Schema({
+    
+    comments:[
+        {
+            comment:
+            {
+                type:String,
+                required:true
+        }
+    ,
+    user:{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    }]
+});
+module.exports= mongoose.model('Comment', CommentSchema);

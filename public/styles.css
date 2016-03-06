@@ -236,7 +236,18 @@ z-index: 998;
 .min-height{
     min-height: inherit;
 }
-
+.card-title-height{
+    max-height: 15px;
+}
+.card-body-height{
+    min-height: 20px;
+}
+.card-height{
+    min-height: 20px !important;
+}
+.dialog-width{
+    width: 860px
+}
 .progress-min-width{
     min-width: 100%;
 }

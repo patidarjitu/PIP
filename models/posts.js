@@ -27,8 +27,8 @@ var PostSchema= mongoose.Schema({
    location: {
     type: [Number], // [<longitude>, <latitude>]
     index: '2dsphere'      // create the geospatial index
-    }
-//    comments:''
+    },
+    comment:{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }
      
 });
 

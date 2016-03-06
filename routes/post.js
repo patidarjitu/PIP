@@ -1,6 +1,7 @@
 var express = require('express');
 var passport = require('passport');
 var Post = require('../models/posts');
+var Comment = require('../models/comments');
 var Users = require('../models/users');
 var router = express.Router();
 
@@ -50,18 +51,28 @@ router.get('/near',function(req,res){
 
 
 router.post('/createpost',function(req,res){
-   var post=new Post({
-       title:req.body.Title,
-       description:req.body.Description,
-       user:req.body.User,
-       location:req.body        .coords
-   });
-   post.save(function(err,docs){
+   console.log(req);
+   var comment=new Comment({});
+   comment.save(function(err,comment){
+       if(err){
+           console.log(err);
+       }
+       console.log(comment);
+       var post=new Post({
+            title:req.body.Title,
+            description:req.body.Description,
+            user:req.user._id,
+            location:req.body.coords,
+            comment:comment._id
+        });
+       post.save(function(err,docs){
        if(err){
            console.log(err);
        }
        res.send(docs);
    });
+   });
+   
 });
 
 module.exports = router;
