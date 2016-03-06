@@ -10,8 +10,8 @@ var express = require('express'),
     localStrategy = require('passport-local' ).Strategy;
     
     
-    // mongodb://prithvi:prithvi@ds019078.mlab.com:19078/prithvi
-    mongoose.connect('mongodb://localhost:27017/public');
+    // mongodb://localhost:27017/public
+    mongoose.connect('mongodb://prithvi:prithvi@ds019078.mlab.com:19078/prithvi');
 var User = require('./models/users.js');
 
 var app = express();
