@@ -237,13 +237,17 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
     console.log($routeParams.id);
     // $scope.Post={};
     $scope.id=$routeParams.id;
-    $http.get('api/getpost',{params:{id:$scope.id}})
-    .success(function(data){
-        $scope.PostDetail=data;
-    })
-    .error(function(err){
-       console.log('Error: ' + data);
-    });
+    $scope.GetPost=function(){
+        $http.get('api/getpost',{params:{id:$scope.id}})
+        .success(function(data){
+            console.log(data);
+            $scope.PostDetail=data;
+        })
+        .error(function(err){
+        console.log('Error: ' + data);
+        });
+    };
+    $scope.GetPost();
     var dialog = document.querySelector('dialog');
     var showModalButton = document.querySelector('.show-modal');
     if (! dialog.showModal) {
@@ -255,6 +259,17 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
     dialog.querySelector('.close').addEventListener('click', function() {
       dialog.close();
     });
+    
+    $scope.PostComment=function(){
+        $http.post('/api/comment', {params:{com:$scope.Comment,id:$scope.PostDetail.comment}})
+            .success(function(data) {
+                 $location.path('/');  
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+
+    };
     
     $scope.activity=[{
         title:'prithvi',

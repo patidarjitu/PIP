@@ -75,4 +75,24 @@ router.post('/createpost',function(req,res){
    
 });
 
+router.post('/comment',function(req,res){
+   console.log(req.body.params.id);
+   var comment=new Comment();
+  
+
+    
+   Comment.find({_id:req.body.params.id}, function(err, post) {
+       var p={comment:req.body.params.com,user:req.user._id};
+       console.log(post);
+        post[0].comments.push(p);
+      if (err) return res.send(err);
+      
+      post[0].save(function(err) {
+        if (err) return res.send(err);
+        res.json({ status : 'done' });
+      });
+    });
+   
+});
+
 module.exports = router;
