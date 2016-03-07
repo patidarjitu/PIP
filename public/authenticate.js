@@ -4,6 +4,7 @@ app.factory('AuthService',
 
     // create user variable
     var user = null;
+    var userDetail;
     function isLoggedIn() {
         if(user) {
             return true;
@@ -27,7 +28,7 @@ app.factory('AuthService',
             if(status === 200 && data.status){
                 console.log(data);
                 user = true;
-                data=data;
+                userDetail=data;
                 deferred.resolve();
             } else {
                 user = false;
@@ -68,14 +69,14 @@ app.factory('AuthService',
 
     }
     
-    function register(username, password) {
+    function register(username, password,ucoords) {
 
         // create a new instance of deferred
         var deferred = $q.defer();
 
         // send a post request to the server
         $http.post('/user/register',
-            {username: username, password: password})
+            {username: username, password: password,location:ucoords})
             // handle success
             .success(function (data, status) {
             if(status === 200 && data.status){
@@ -94,7 +95,7 @@ app.factory('AuthService',
 
     }
     function getUserDetails(){
-        return user;
+        return userDetail;
     }
 
     // return available functions for use in the controllers

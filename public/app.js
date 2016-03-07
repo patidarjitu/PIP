@@ -14,6 +14,11 @@ app.config(['$routeProvider',
         templateUrl: 'partials/post.html',
         controller: 'getpost'
       }).
+      when('/users', {
+        templateUrl: 'partials/users.html',
+        controller: 'users'
+      }).
+
       when('/login', {
         templateUrl: 'partials/login.html',     
       }).
@@ -89,14 +94,21 @@ app.controller('logout',['$scope','$location','AuthService',function($scope, $lo
 
 app.controller('register',['$scope','$location','AuthService',function($scope, $location,AuthService) {
     console.log(AuthService.getUserStatus());
-
+    navigator.geolocation.getCurrentPosition(pos1);
+            $scope.ucoords=[];
+                function pos1(po){
+                $scope.ucoords[0]=po.coords.longitude;
+                $scope.ucoords[1]=po.coords.latitude;
+                return $scope.ucoords;
+                }
     $scope.register = function () {
 
       // initial values
       $scope.error = false;
       $scope.disabled = true;
       // call register from service
-      AuthService.register($scope.registerForm.username, $scope.registerForm.password)
+      console.log($scope.ucoords);
+      AuthService.register($scope.registerForm.username, $scope.registerForm.password,$scope.ucoords)
         // handle success
         .then(function (data) {
           console.log(data);
@@ -120,6 +132,7 @@ app.controller('register',['$scope','$location','AuthService',function($scope, $
     
 app.controller('home',['$scope','$http','AuthService','$rootScope','$location',function($scope, $http,AuthService,$rootScope,$location) {
     $scope.progressbar=true;
+    
      console.log(AuthService.getUserStatus());
         console.log(AuthService.getUserDetails());
     $scope.user=AuthService.getUserDetails()||{};
@@ -127,12 +140,14 @@ app.controller('home',['$scope','$http','AuthService','$rootScope','$location',f
     $scope.distance=0;
     
     $scope.user.profilepic=$scope.user.profilepic||'images/user.jpg';
-    $rootScope.username=$scope.user.username||'User';
-    if($scope.user.username)
+    $rootScope.username=$scope.user.user||'User';
+    $rootScope.userpoints=$scope.user.points||0;
+    if($scope.user.user)
     {
-        $rootScope.username=$scope.user.username;
+        $rootScope.username=$scope.user.user||'User';
+        $rootScope.userpoints=$scope.user.points||0;
     }
-    $scope.user.points=$scope.user.points||0;
+    
     
     $scope.homeposts=[];
     $scope.allposts=function(){
@@ -184,7 +199,7 @@ app.controller('home',['$scope','$http','AuthService','$rootScope','$location',f
       // call logout from service
       AuthService.logout()
         .then(function () {
-          $location.path('/login');
+           window.location.reload(); 
         });
 
     };
@@ -298,4 +313,46 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
     }
     ];
     
+}]);
+
+app.controller('users',['$scope','$http','AuthService','$location','$routeParams',function($scope, $http,AuthService,$location,$routeParams) {
+    $scope.allusers = function () {
+        $http.get('api/users')
+            .success(function (data) {
+                $scope.progressbar = false;
+                $scope.users = data;
+                console.log(data);
+            })
+            .error(function (err) {
+                console.log('Error: ' + err);
+            });
+    }
+        $scope.allusers();
+        navigator.geolocation.getCurrentPosition(pos1);
+        $scope.coords=[];
+            function pos1(po){
+            $scope.coords[0]=po.coords.longitude;
+            $scope.coords[1]=po.coords.latitude;
+            return $scope.coords;
+            }
+        $scope.unear=function(){
+            if($scope.udistance==0){
+            $scope.allusers();
+            }else{
+                $scope.progressbar=true;
+                $http.get('api/unear',{params:{
+                    lon:$scope.coords[0],
+                    lat:$scope.coords[1],
+                    distance:$scope.distance||20
+                }})
+                .success(function(data) { 
+                $scope.users=data;
+                $scope.progressbar=false;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+        }
+    };
 }]);

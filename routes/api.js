@@ -13,7 +13,7 @@ var router = express.Router();
 // });
 
 router.post('/register', function(req, res) {
-    Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+    Account.register(new Account({ username : req.body.username,location:req.body.location }), req.body.password, function(err, account) {
         if (err) {
             console.log(err)
             
@@ -52,7 +52,8 @@ router.post('/login', passport.authenticate('local'), function(req, res, next) {
       
       res.status(200).json({
         status: 'Login successful!',
-        user:user.username
+        user:user.username,
+        points:user.points
       });
     });
   })(req, res, next);
