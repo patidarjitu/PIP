@@ -142,16 +142,16 @@ app.controller('home',['$scope','$http','AuthService','$rootScope','$location','
                 'Content-Type': 'text/html'
 			};
     $scope.fblogin=function(){
-        $window.location.href='/auth/facebook';
-    //     $http({
-    //      url:'/auth/facebook',
-    //     method:'GET',
-    //    headers: headers
-    //     }).success(function(data){
-    //         console.log(data);
-    //     }).error(function(){
-    //         console.log('err');
-    //     });
+        // $window.location.href='/auth/facebook';
+        $http({
+         url:'/auth/facebook',
+        method:'GET',
+       headers: headers
+        }).success(function(data){
+            console.log(data);
+        }).error(function(){
+            console.log('err');
+        });
     };
     
     $scope.progressbar=true;
