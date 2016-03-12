@@ -1,6 +1,9 @@
 var app = angular.module('myApp', ['ngRoute']);
-app.config(['$routeProvider',
-  function($routeProvider) {
+app.config(['$routeProvider','$httpProvider',
+  function($routeProvider,$httpProvider) {
+        $httpProvider.defaults.useXDomain = true;
+        $httpProvider.defaults.headers.common = 'Content-Type: application/json';
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
     $routeProvider.
       when('/', {
         templateUrl: 'partials/home.html',
@@ -25,6 +28,8 @@ app.config(['$routeProvider',
       otherwise({
         redirectTo: '/'
       });
+      
+      
   }]);
   
 //   app.run(function ($rootScope, $location, $route, AuthService) {
@@ -130,7 +135,25 @@ app.controller('register',['$scope','$location','AuthService',function($scope, $
 
 
     
-app.controller('home',['$scope','$http','AuthService','$rootScope','$location',function($scope, $http,AuthService,$rootScope,$location) {
+app.controller('home',['$scope','$http','AuthService','$rootScope','$location','$window',function($scope, $http,AuthService,$rootScope,$location,$window) {
+    
+    var headers = {
+				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Content-Type': 'text/html'
+			};
+    $scope.fblogin=function(){
+        $window.location.href='/auth/facebook';
+    //     $http({
+    //      url:'/auth/facebook',
+    //     method:'GET',
+    //    headers: headers
+    //     }).success(function(data){
+    //         console.log(data);
+    //     }).error(function(){
+    //         console.log('err');
+    //     });
+    };
+    
     $scope.progressbar=true;
     
      console.log(AuthService.getUserStatus());
