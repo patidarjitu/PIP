@@ -61,11 +61,11 @@
       </header>
       <div class="demo-drawer mdl-layout__drawer mdl-color--indigo-500 mdl-color-text--blue-grey-50">
         <header class="demo-drawer-header">
-          <div class="mdl-badge mdl-badge--overlap"  data-badge="{{userpoints}}">
+          <div class="mdl-badge mdl-badge--overlap"  data-badge="{{user.points||0}}">
           <img ng-src="{{user.profilepic}}" class="demo-avatar ">
           </div>
           <!--<div class="mdl-badge mdl-badge--overlap" data-badge="1"></div>data-badge="1"-->
-          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect <mdl-button--colored></mdl-button--colored>">{{username}}</button>
+          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect <mdl-button--colored></mdl-button--colored>">{{user.username||'User'}}</button>
           
         </header>
         <nav class="demo-navigation mdl-navigation mdl-color--indigo-700">

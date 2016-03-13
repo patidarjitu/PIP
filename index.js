@@ -20,7 +20,8 @@ var app = express();
 app.use(cors());
 var routes = require('./routes/api.js');
 var posts = require('./routes/post.js');
- var fb = require('./routes/facebook.js');
+ var facebook = require('./routes/facebook.js');
+  var fb = require('./routes/fb.js');
 app.use(express.static(__dirname + '/public'));
 
 app.use(logger('dev'));
@@ -55,11 +56,23 @@ app.use(function(req, res, next) {
   next();
 });
 
+// app.all('/auth/facebook', function(req, res){
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//     
+// });
+// app.all('/auth/facebook/callback', function(req, res){
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//     
+// });
 app.use('/user/', routes);
 
 app.use('/api/', posts);
 
-app.use('/auth/', fb)
+app.use('/auth/', facebook);
+
+app.use('/fb/', fb);
 
 
 

@@ -15,6 +15,9 @@ var CommentSchema=mongoose.Schema({
                 type:String,
                 required:true
             },
+            profilepic:{
+                type:String
+            }
     }]
 });
 module.exports= mongoose.model('Comment', CommentSchema);

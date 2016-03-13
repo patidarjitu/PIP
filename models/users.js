@@ -27,6 +27,13 @@ var userSchema = mongoose.Schema({
         comments:{
             type:Number,
             default:0
+        },
+        userid:{
+            type:Number,
+            required:true
+        },
+        profilepic:{
+            type:String 
         }
 });
 

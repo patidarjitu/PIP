@@ -1,9 +1,26 @@
 var app = angular.module('myApp', ['ngRoute']);
-app.config(['$routeProvider','$httpProvider',
-  function($routeProvider,$httpProvider) {
-        $httpProvider.defaults.useXDomain = true;
-        $httpProvider.defaults.headers.common = 'Content-Type: application/json';
-        delete $httpProvider.defaults.headers.common['X-Requested-With'];
+//484360891751213 local
+//210971289249607 global
+
+window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '210971289249607',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+app.config(['$routeProvider',
+  function($routeProvider) {
+      
     $routeProvider.
       when('/', {
         templateUrl: 'partials/home.html',
@@ -46,130 +63,62 @@ app.config(['$routeProvider','$httpProvider',
 //     }
 //   });
 // });
-app.controller('root',['$scope','$http','AuthService',function($scope, $http,AuthService) {
-
-}]);
-app.controller('login',['$scope','$location','AuthService','$window',function($scope, $location,AuthService,$window) {
     
-        
-    $scope.login = function () {
-
-      // initial values
-      $scope.error = false;
-      $scope.disabled = true;
-
-      // call login from service
-      AuthService.login($scope.loginForm.username, $scope.loginForm.password)
-        // handle success
-        .then(function (response) {
-            console.log(response);  
-          $location.path('/');
-          $scope.disabled = false;
-          $scope.loginForm = {};
-          
-          
-        })
-        // handle error
-        .catch(function () {
-          $scope.error = true;
-          $scope.errorMessage = "Invalid username and/or password";
-          $scope.disabled = false;
-          $scope.loginForm = {};
-        });
-
-    };
-
-}]);
-app.controller('logout',['$scope','$location','AuthService',function($scope, $location,AuthService) {
-    console.log(AuthService.getUserStatus());
+app.controller('home',['$scope','$http','$rootScope','$location','$window',function($scope, $http,$rootScope,$location,$window) {
     
-
-    $scope.logout = function () {
-
-      console.log(AuthService.getUserStatus());
-
-      // call logout from service
-      AuthService.logout()
-        .then(function () {
-          $location.path('/login');
-        });
-
-    };
-}]);
-
-app.controller('register',['$scope','$location','AuthService',function($scope, $location,AuthService) {
-    console.log(AuthService.getUserStatus());
-    navigator.geolocation.getCurrentPosition(pos1);
-            $scope.ucoords=[];
-                function pos1(po){
-                $scope.ucoords[0]=po.coords.longitude;
-                $scope.ucoords[1]=po.coords.latitude;
-                return $scope.ucoords;
-                }
-    $scope.register = function () {
-
-      // initial values
-      $scope.error = false;
-      $scope.disabled = true;
-      // call register from service
-      console.log($scope.ucoords);
-      AuthService.register($scope.registerForm.username, $scope.registerForm.password,$scope.ucoords)
-        // handle success
-        .then(function (data) {
-          console.log(data);
-          $location.path('/login');
-          $scope.disabled = false;
-          $scope.registerForm = {};
-        })
-        // handle error
-        .catch(function () {
-          $scope.error = true;
-          $scope.errorMessage = "Something went wrong!";
-          $scope.disabled = false;
-          $scope.registerForm = {};
-        });
-
-    };
-
-}]);
-
-
-    
-app.controller('home',['$scope','$http','AuthService','$rootScope','$location','$window',function($scope, $http,AuthService,$rootScope,$location,$window) {
-    
-    var headers = {
-				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                'Content-Type': 'text/html'
-			};
+            $scope.user=[];
     $scope.fblogin=function(){
-        // $window.location.href='/auth/facebook';
-        $http({
-         url:'/auth/facebook',
-        method:'GET',
-       headers: headers
-        }).success(function(data){
-            console.log(data);
-        }).error(function(){
-            console.log('err');
+        
+    FB.login(function(response) {
+    if (response.authResponse) {
+     console.log('Welcome!  Fetching your information.... ');
+     FB.api('/me', function(data) {
+       console.log('Good to see you, ' + response + '.');
+       
+       FB.api(
+        "/"+data.id+"/picture",
+        function (response) {
+        if (response && !response.error) {
+            /* handle the result */
+            
+            $scope.fbloginDO(data,response)
+        }
+        }
+    );
+     });
+    } else {
+        console.log('User cancelled login or did not fully authorize.');
+        }
+    });
+    
+    $scope.fbloginDO=function(data,res){
+        console.log(data);
+        console.log(res);
+        var userData={
+            id:data.id,
+            username:data.name,
+            profilepic:res.data.url,
+            location:$scope.coords
+        };
+        console.log(userData);
+        $http.post('/fb/login',{params:userData}).success(function(data){
+            console.log(data)
+            $scope.user=data[0];
+        }).error(function(err){
+           console.log(err); 
         });
+    }
+
     };
     
     $scope.progressbar=true;
-    
-     console.log(AuthService.getUserStatus());
-        console.log(AuthService.getUserDetails());
-    $scope.user=AuthService.getUserDetails()||{};
+    // 
+    //  console.log(AuthService.getUserStatus());
+    //     console.log(AuthService.getUserDetails());
+    // $scope.user=AuthService.getUserDetails()||{};
     console.log($scope.searchvalue);
     $scope.distance=0;
-    
     $scope.user.profilepic=$scope.user.profilepic||'images/user.jpg';
-    $rootScope.username=$scope.user.user||'User';
-    $rootScope.userpoints=$scope.user.points||0;
-    if($scope.user.user)
-    {
-        $rootScope.username=$scope.user.user||'User';
-        $rootScope.userpoints=$scope.user.points||0;
-    }
     
     
     $scope.homeposts=[];
@@ -214,25 +163,11 @@ app.controller('home',['$scope','$http','AuthService','$rootScope','$location','
         });
     }
     };        
-    
-    $scope.logout = function () {
-
-      console.log(AuthService.getUserStatus());
-
-      // call logout from service
-      AuthService.logout()
-        .then(function () {
-           window.location.reload(); 
-        });
-
-    };
-        
                 
 
 }]);
 
-app.controller('addpost',['$scope','$http','AuthService','$location',function($scope, $http,AuthService,$location) {
-    console.log(AuthService.getUserDetails());
+app.controller('addpost',['$scope','$http','$location',function($scope, $http,$location) {
     $scope.Post={};
     navigator.geolocation.getCurrentPosition(pos);
         $scope.Post.coords=[];
@@ -242,18 +177,14 @@ app.controller('addpost',['$scope','$http','AuthService','$location',function($s
             return $scope.Post.coords;
             }
     // $scope.Post={};
-    $scope.user=AuthService.getUserDetails();
+    
     // when submitting the add form, send the text to the node API
     $scope.createPost = function() {
-        if(!AuthService.getUserStatus())
-        {
-            $location.path('/login');
-        }
         
         
          console.log($scope.Post.coords);
-        $scope.Post.User= $scope.user.id;
-        console.log($scope.user.id);
+        $scope.Post.User= $scope.user._id;
+        console.log($scope.user._id);
         $http.post('/api/createpost', $scope.Post)
             .success(function(data) {
                  $location.path('/');  
@@ -263,22 +194,11 @@ app.controller('addpost',['$scope','$http','AuthService','$location',function($s
             });
     };
 
-    // delete a todo after checking it
-    $scope.deleteTodo = function(id) {
-        $http.delete('/api/todos/' + id)
-            .success(function(data) {
-                $scope.todos = data;
-                console.log(data);
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
-    };
-    
+        
 }]);
 
-app.controller('getpost',['$scope','$http','AuthService','$location','$routeParams',function($scope, $http,AuthService,$location,$routeParams) {
-    console.log(AuthService.getUserDetails());
+app.controller('getpost',['$scope','$http','$location','$routeParams',function($scope, $http,$location,$routeParams) {
+    
     console.log($routeParams.id);
     // $scope.Post={};
     $scope.id=$routeParams.id;
@@ -316,7 +236,8 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
     });
     
     $scope.PostComment=function(){
-        $http.post('/api/comment', {params:{com:$scope.Comment,id:$scope.Comments._id}})
+        $http.post('/api/comment', {params:{com:$scope.Comment,id:$scope.Comments._id,
+        user:$scope.user._id,username:$scope.user.username,profilepic:$scope.user.profilepic}})
             .success(function(data) {
                  $location.path('/');  
             })
@@ -326,19 +247,8 @@ app.controller('getpost',['$scope','$http','AuthService','$location','$routePara
 
     };
     
-    $scope.activity=[{
-        title:'prithvi',
-        content:'eretregtght'
-    },
-    {
-        title:'prithvi',
-        content:'eretregtght'
-    }
-    ];
-    
-}]);
-
-app.controller('users',['$scope','$http','AuthService','$location','$routeParams',function($scope, $http,AuthService,$location,$routeParams) {
+}]);    
+app.controller('users',['$scope','$http','$location','$routeParams',function($scope, $http,$location,$routeParams) {
     $scope.allusers = function () {
         $http.get('api/users')
             .success(function (data) {
@@ -357,7 +267,7 @@ app.controller('users',['$scope','$http','AuthService','$location','$routeParams
             $scope.coords[0]=po.coords.longitude;
             $scope.coords[1]=po.coords.latitude;
             return $scope.coords;
-            }
+            };
         $scope.unear=function(){
             if($scope.udistance==0){
             $scope.allusers();
@@ -366,7 +276,7 @@ app.controller('users',['$scope','$http','AuthService','$location','$routeParams
                 $http.get('api/unear',{params:{
                     lon:$scope.coords[0],
                     lat:$scope.coords[1],
-                    distance:$scope.distance||20
+                    distance:$scope.udistance||20
                 }})
                 .success(function(data) { 
                 $scope.users=data;

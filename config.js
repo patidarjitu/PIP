@@ -2,7 +2,7 @@ var ids = {
   facebook: {
     clientID: '484360891751213',
     clientSecret: 'd0a46d0091e539d5bc0cff6669a83c5c',
-    callbackURL: 'http://public-interaction-portal.herokuapp.com/auth/facebook/callback'
+    callbackURL: 'http://localhost:1439/auth/facebook/callback'
   },
   twitter: {
     consumerKey: 'get_your_own',

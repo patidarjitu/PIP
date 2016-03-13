@@ -1,13 +1,13 @@
 
 <div class="mdl-grid">
-<!--<ul class="media-list">
+<ul class="media-list">
 <li class="media">
 <div class="media-left image-padding">
       <a href="#">
-        <img class="media-object" width="50px" height="50px" src="images/user.jpg" alt="Generic placeholder image">
+        <img class="media-object" width="50px" height="50px" ng-src="{{PostDetail.user.profilepic}}" alt="Generic placeholder image">
       </a>
     </div>
-	<div class="media-body">-->
+	<div class="media-body">
 
 <div class="demo-card-wide mdl-card mdl-cell mdl-cell--12-col mdl-shadow--6dp card-height">
 				 <div class="mdl-card__title card-title-height">
@@ -35,16 +35,25 @@
 
         
 
-				</div>
+				
+                </div>
                 <div class="demo-card-wide mdl-card mdl-cell mdl-cell--12-col mdl-shadow--3dp card-height" ng-repeat="item in Comments.comments">
+                <div class="media">
+        <a class="media-left image-padding" href="#">
+          <img class="media-object" width="50px" height="50px" ng-src="{{item.profilepic}}" alt="Generic placeholder image">
+        </a>
+			<div class="media-body">
+                
 				  <div class="mdl-card__title  card-title-height">
-				   <h4>{{item.username}}</h4>
+				   <h6>{{item.username}}</h6>
 				   
 				 </div>
                  <div class="mdl-card__supporting-text card-body-height">
                  {{item.comment}}
                  </div>
 				</div>
+                </div>
+                </div>
                 </div>
                 
                 
