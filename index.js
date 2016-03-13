@@ -4,11 +4,8 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     expressSession = require('express-session'),
     mongoose = require('mongoose'),
-    hash = require('bcrypt-nodejs'),
-    path = require('path'),
-    cors = require('cors'),
-    passport = require('passport'),
-    localStrategy = require('passport-local' ).Strategy;
+    
+    path = require('path');
 
     
     
@@ -17,10 +14,10 @@ var express = require('express'),
 var User = require('./models/users.js');
 
 var app = express();
-app.use(cors());
-var routes = require('./routes/api.js');
+
+
 var posts = require('./routes/post.js');
- var facebook = require('./routes/facebook.js');
+
   var fb = require('./routes/fb.js');
 app.use(express.static(__dirname + '/public'));
 
@@ -37,40 +34,10 @@ app.use(require('express-session')({
     saveUninitialized: false
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
 
-
-// passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
-});
-
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
-// app.all('/auth/facebook', function(req, res){
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//     
-// });
-// app.all('/auth/facebook/callback', function(req, res){
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//     
-// });
-app.use('/user/', routes);
 
 app.use('/api/', posts);
 
-app.use('/auth/', facebook);
 
 app.use('/fb/', fb);
 

@@ -1,4 +1,4 @@
-var app = angular.module('myApp', ['ngRoute']);
+var app = angular.module('myApp', ['ngRoute','ngCookies']);
 //484360891751213 local
 //210971289249607 global
 
@@ -38,10 +38,6 @@ app.config(['$routeProvider',
         templateUrl: 'partials/users.html',
         controller: 'users'
       }).
-
-      when('/login', {
-        templateUrl: 'partials/login.html',     
-      }).
       otherwise({
         redirectTo: '/'
       });
@@ -49,25 +45,11 @@ app.config(['$routeProvider',
       
   }]);
   
-//   app.run(function ($rootScope, $location, $route, AuthService) {
-//   $rootScope.$on('$routeChangeStart', function (event, next, current) {
-//     if (AuthService.isLoggedIn() === false) {
-//       $location.path('/login');
-//     }
-//   });
-// });
-// app.run(function ($rootScope, $location, $route, AuthService) {
-//   $rootScope.$on('$routeChangeStart', function (event, next, current) {
-//     if (next.access.restricted && !AuthService.getUserStatus()) {
-//       $location.path('/');
-//     }
-//   });
-// });
-    
-app.controller('home',['$scope','$http','$rootScope','$location','$window',function($scope, $http,$rootScope,$location,$window) {
+app.controller('home',['$scope','$http','$rootScope','$location','$window','$cookies',function($scope, $http,$rootScope,$location,$window,$cookies) {
     
             $scope.user=[];
-    $scope.fblogin=function(){
+            var p;
+    $scope.login=function(){
         
     FB.login(function(response) {
     if (response.authResponse) {
@@ -104,22 +86,36 @@ app.controller('home',['$scope','$http','$rootScope','$location','$window',funct
         $http.post('/fb/login',{params:userData}).success(function(data){
             console.log(data)
             $scope.user=data[0];
+            // $cookies.put("userName", $scope.user);
+            // var p=$cookies.get("userName");
+            $cookies.putObject('objSocket', $scope.user);
+            
         }).error(function(err){
            console.log(err); 
         });
-    }
+    };
 
     };
     
+    
+    $scope.logout=function(){
+            
+            $cookies.remove("objSocket");
+            $scope.user=[];
+    };
     $scope.progressbar=true;
     // 
     //  console.log(AuthService.getUserStatus());
     //     console.log(AuthService.getUserDetails());
     // $scope.user=AuthService.getUserDetails()||{};
+    
     console.log($scope.searchvalue);
     $scope.distance=0;
     $scope.user.profilepic=$scope.user.profilepic||'images/user.jpg';
-    
+    if($cookies.getObject('objSocket'))
+    {
+        $scope.user=$cookies.getObject('objSocket');
+    }
     
     $scope.homeposts=[];
     $scope.allposts=function(){
@@ -147,6 +143,12 @@ app.controller('home',['$scope','$http','$rootScope','$location','$window',funct
         if($scope.distance==0){
         $scope.allposts();
         }else{
+            
+            var snackbarContainer = document.querySelector('#demo-toast-example');
+            
+                var data = {message: "showing posts in "+$scope.distance/1000+" KM radius"};
+                snackbarContainer.MaterialSnackbar.showSnackbar(data);
+                    
             $scope.progressbar=true;
             $http.get('api/near',{params:{
                 lon:$scope.coords[0],
@@ -180,8 +182,7 @@ app.controller('addpost',['$scope','$http','$location',function($scope, $http,$l
     
     // when submitting the add form, send the text to the node API
     $scope.createPost = function() {
-        
-        
+        if($scope.user._id){
          console.log($scope.Post.coords);
         $scope.Post.User= $scope.user._id;
         console.log($scope.user._id);
@@ -192,6 +193,10 @@ app.controller('addpost',['$scope','$http','$location',function($scope, $http,$l
             .error(function(data) {
                 console.log('Error: ' + data);
             });
+        }
+        else{
+            alert('Please Login');
+        }
     };
 
         
@@ -236,6 +241,7 @@ app.controller('getpost',['$scope','$http','$location','$routeParams',function($
     });
     
     $scope.PostComment=function(){
+        if($scope.user._id){
         $http.post('/api/comment', {params:{com:$scope.Comment,id:$scope.Comments._id,
         user:$scope.user._id,username:$scope.user.username,profilepic:$scope.user.profilepic}})
             .success(function(data) {
@@ -244,6 +250,10 @@ app.controller('getpost',['$scope','$http','$location','$routeParams',function($
             .error(function(data) {
                 console.log('Error: ' + data);
             });
+        }
+        else{
+            alert('Please Login');
+        }
 
     };
     
@@ -272,6 +282,11 @@ app.controller('users',['$scope','$http','$location','$routeParams',function($sc
             if($scope.udistance==0){
             $scope.allusers();
             }else{
+                var snackbarContainer = document.querySelector('#demo-toast-example');
+            
+                var data = {message: "showing posts in "+$scope.udistance/1000+" KM radius"};
+                snackbarContainer.MaterialSnackbar.showSnackbar(data);
+            
                 $scope.progressbar=true;
                 $http.get('api/unear',{params:{
                     lon:$scope.coords[0],
