@@ -4,7 +4,6 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     expressSession = require('express-session'),
     mongoose = require('mongoose'),
-    
     path = require('path');
 
     

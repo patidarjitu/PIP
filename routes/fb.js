@@ -21,12 +21,12 @@ router.post('/login',function(req,res){
           location:req.body.params.location
         });
         console.log("3");
-        user.save(function(err) {
+        user.save(function(err,userData) {
           if(err) {
             console.log(err);  // handle errors!
           } else {
             console.log("saving user ...");
-            res.send(user);
+            res.send(userData);
           }
         });
       }

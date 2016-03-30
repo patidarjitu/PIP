@@ -143,12 +143,6 @@ app.controller('home',['$scope','$http','$rootScope','$location','$window','$coo
         if($scope.distance==0){
         $scope.allposts();
         }else{
-            
-            var snackbarContainer = document.querySelector('#demo-toast-example');
-            
-                var data = {message: "showing posts in "+$scope.distance/1000+" KM radius"};
-                snackbarContainer.MaterialSnackbar.showSnackbar(data);
-                    
             $scope.progressbar=true;
             $http.get('api/near',{params:{
                 lon:$scope.coords[0],
@@ -282,11 +276,6 @@ app.controller('users',['$scope','$http','$location','$routeParams',function($sc
             if($scope.udistance==0){
             $scope.allusers();
             }else{
-                var snackbarContainer = document.querySelector('#demo-toast-example');
-            
-                var data = {message: "showing posts in "+$scope.udistance/1000+" KM radius"};
-                snackbarContainer.MaterialSnackbar.showSnackbar(data);
-            
                 $scope.progressbar=true;
                 $http.get('api/unear',{params:{
                     lon:$scope.coords[0],
