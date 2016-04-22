@@ -154,4 +154,40 @@ router.post('/comment',function(req,res){
    
 });
 
+router.post('/like',function(req,res){
+   console.log(req.body.params.user);
+
+  
+   Post.findOneAndUpdate({_id:req.body.params.id},{$push: {"likes": {user:req.body.params.user}}},
+    {safe: true, upsert: true}, function(err, post) {
+       
+       console.log(post);
+        
+      if (err) return res.send(err);
+      
+      
+        res.send(post);
+      
+    });
+   
+});
+
+router.post('/editpost',function(req,res){
+   
+
+  
+   Post.findOneAndUpdate({_id:req.body.params._id},  {description:req.body.params.description},
+    {safe: true, upsert: true}, function(err, post) {
+       
+       console.log(post);
+        
+      if (err) return res.send(err);
+      
+      
+        res.send(post);
+      
+    });
+   
+});
+
 module.exports = router;

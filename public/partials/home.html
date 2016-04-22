@@ -17,6 +17,10 @@
                 <a href="#/post/{{item._id}}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
                 Read Full Content
                 </a>
+                <!-- Number badge on icon -->
+<span ng-click="PostLike(item._id)">Like</span>
+<span class="mdl-badge" data-badge="{{item.likes.length}}"></span>
+
             </div>
             
         </div>

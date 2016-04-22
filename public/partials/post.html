@@ -14,12 +14,22 @@
 				   <h4>{{PostDetail.title}}</h4>
 				   
 				 </div>
-                 <div class="mdl-card__supporting-text card-body-height">
+                 <div class="mdl-card__supporting-text card-body-height" ng-show="!editPostDisplay" ng-class="{{editPostDisplay}}">
                  {{PostDetail.description}}
                  </div>
+                 <div class="edit" ng-show="editPostDisplay">
+                 <textarea class="mdl-textfield__input" type="text" rows= "5" id="description" ng-model="PostDetail.description"></textarea>
+                    <label class="mdl-textfield__label" for="description">Description</label>
+                    </div>
                  <div class="mdl-card__actions mdl-card--border ">
-                <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent show-modal">Comment</button>
+                <button type="button" ng-show="!editPostDisplay" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent show-modal">Comment</button>
+                 <button type="button" ng-click="updatePost(PostDetail)" ng-show="editPostDisplay" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent show-modal">Update</button>   
             </div>
+            <div class="mdl-card__menu">
+    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" ng-click="editPost()" ng-show="showEdit">
+      <i class="material-icons">edit</i>
+    </button>
+  </div>
             <dialog class=" mdl-dialog dialog-width">
                 <div class="mdl-dialog__content">
                  <div class="mdl-textfield mdl-js-textfield mdl-cell--12-col mdl-cell--4-col-tablet">
@@ -32,6 +42,7 @@
                 <button type="button" class="mdl-button close">Close</button>
                 </div>
             </dialog>
+            
 
         
 

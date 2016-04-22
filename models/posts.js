@@ -22,7 +22,7 @@ var PostSchema= mongoose.Schema({
         default: Date.now,
        required:true,
     },
-
+    likes: [{user:{type: mongoose.Schema.Types.ObjectId, ref:'User'}}],
    user:{ type: mongoose.Schema.Types.ObjectId, ref: 'User' },
    location: {
     type: [Number], // [<longitude>, <latitude>]

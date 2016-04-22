@@ -158,7 +158,41 @@ app.controller('home',['$scope','$http','$rootScope','$location','$window','$coo
             console.log('Error: ' + data);
         });
     }
-    };        
+    };
+    $scope.PostLike=function(id){
+         if($cookies.getObject('objSocket'))
+            {
+                $scope.user=$cookies.getObject('objSocket');
+                if(LikeValidate($scope.user._id,id)){
+                    $http.post('/api/like', {params:{ user:$scope.user._id,id:id}})
+                .success(function(data) {
+                    $scope.allposts();  
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });    
+                }
+            
+            }
+        
+        
+    };    
+    function LikeValidate(user,post){
+        var exist=true;
+        angular.forEach($scope.homeposts, function(val,key){
+            console.log(val);
+            if(post==val._id){
+                angular.forEach(val.likes,function(value,key){
+                    console.log(value);
+                    if(value.user==user){
+                        exist=false;
+                    }
+                });
+            }
+            
+        });
+     return exist;   
+    }    
                 
 
 }]);
@@ -196,7 +230,9 @@ app.controller('addpost',['$scope','$http','$location',function($scope, $http,$l
         
 }]);
 
-app.controller('getpost',['$scope','$http','$location','$routeParams',function($scope, $http,$location,$routeParams) {
+app.controller('getpost',['$scope','$http','$location','$routeParams','$cookies',function($scope, $http,$location,$routeParams,$cookies) {
+    
+    $scope.showEdit=false;
     
     console.log($routeParams.id);
     // $scope.Post={};
@@ -207,6 +243,10 @@ app.controller('getpost',['$scope','$http','$location','$routeParams',function($
         .success(function(data){
             $scope.progressbar=false;
             $scope.PostDetail=data;
+            if($cookies.getObject('objSocket'))
+            {
+                displayEdit($scope.PostDetail);
+            }
             console.log(data);
             $http.get('api/getcomments',{params:{id:$scope.PostDetail.comment}})
             .success(function(data){
@@ -222,6 +262,8 @@ app.controller('getpost',['$scope','$http','$location','$routeParams',function($
         });
     };
     $scope.GetPost();
+    $scope.editPostDisplay=false;
+    
     var dialog = document.querySelector('dialog');
     var showModalButton = document.querySelector('.show-modal');
     if (! dialog.showModal) {
@@ -233,6 +275,29 @@ app.controller('getpost',['$scope','$http','$location','$routeParams',function($
     dialog.querySelector('.close').addEventListener('click', function() {
       dialog.close();
     });
+    
+    $scope.updatePost=function(updatePost){
+         $http.post('/api/editpost', {params:updatePost})
+            .success(function(data) {
+                 $location.path('/');  
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+        
+    };
+    function displayEdit(post){
+        if(post.user._id==$cookies.getObject('objSocket')._id){
+        $scope.showEdit=true;
+        }
+    }
+    
+    
+    $scope.editPost=function(){
+        
+        $scope.editPostDisplay=true;
+        
+    }
     
     $scope.PostComment=function(){
         if($scope.user._id){

@@ -54,9 +54,7 @@
             </div>
           </div>
           
-          <button ng-if="!user.username" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect <mdl-button--colored></mdl-button--colored>" ng-click="login()">Login</button>
           
-          <button ng-if="user.username" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect <mdl-button--colored></mdl-button--colored>" ng-click="logout();">Logout</button>
         </div>
       </header>
       <div class="demo-drawer mdl-layout__drawer mdl-color--indigo-500 mdl-color-text--blue-grey-50">
@@ -69,6 +67,9 @@
           
         </header>
         <nav class="demo-navigation mdl-navigation mdl-color--indigo-700">
+            <button ng-if="!user.username" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect <mdl-button--colored></mdl-button--colored>" ng-click="login()">Login</button>
+          
+          <button ng-if="user.username" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect <mdl-button--colored></mdl-button--colored>" ng-click="logout();">Logout</button>
           <a class="mdl-navigation__link mdl-color-text--yellow-400 " href="#/"><i class="mdl-color-text--yellow-400 material-icons" role="presentation">home</i>Home</a>
           <a class="mdl-navigation__link mdl-color-text--yellow-400" href="#/users"><i class="mdl-color-text--yellow-400 material-icons" role="presentation">inbox</i>Users</a>
           <a class="mdl-navigation__link mdl-color-text--yellow-400"><i class="mdl-color-text--yellow-400 material-icons" role="presentation">report</i>Spam</a>
