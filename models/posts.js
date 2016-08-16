@@ -1,11 +1,12 @@
 var mongoose=require('mongoose');
-var user=require('./users');
-var comments=require('./comments');
+//var user=require('./users');
+//var comments=require('./comments');
 
-module.exports=new mongoose.Schema({
+var PostSchema= mongoose.Schema({
    title:{
        type:String,
-       required:true
+       required:true, 
+       index: true
    },
    description:{
        type:String,
@@ -13,13 +14,22 @@ module.exports=new mongoose.Schema({
    },
    createddate:{
        type:Date,
+        default: Date.now,
        required:true,
    },
-   modifieddate:{
+   modifieddate:{   
        type:Date,
+        default: Date.now,
        required:true,
-   },
-   user:user,
-   comments:comments
+    },
+    likes: [{user:{type: mongoose.Schema.Types.ObjectId, ref:'User'}}],
+   user:{ type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+   location: {
+    type: [Number], // [<longitude>, <latitude>]
+    index: '2dsphere'      // create the geospatial index
+    },
+    comment:{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }
      
 });
+
+module.exports= mongoose.model('Post', PostSchema);   
